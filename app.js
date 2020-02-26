@@ -69,6 +69,7 @@ App({
     })
   },
   globalData: {
-    userInfo: null
+    userInfo: null,
+    times:0,
   }
 })

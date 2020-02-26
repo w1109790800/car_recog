@@ -91,33 +91,6 @@ Page({
       })
     }
   },
-  takePhoto() {
-
-    for (var i = 350; i > 100; i -= 3)
-      that.setData(
-        {
-          height: i,
-        })
-    let that = this;
-    const ctx = wx.createCameraContext()
-    ctx.takePhoto({
-      quality: 'high',
-      success: (res) => {
-        that.setData({
-          src: res.tempImagePath,
-          isCamera: true
-        })
-        that.requestrecog();
-      },
-      fail: function (res) {
-        wx.showToast({
-          title: '拍照错误',
-          icon: 'none',
-          duration: 2000
-        });
-      }
-    })
-  },
 
   requestLogin() {
     let that = this;
@@ -194,8 +167,9 @@ Page({
     })
   },
   addtimes() {
-
-
+    var times = wx.getStorageSync('times')
+    times += 3
+    wx.setStorageSync('times', times)
 
   },
   takePhoto() {
@@ -292,11 +266,13 @@ Page({
 
       },
       fail: function (res) {
+        console.log("dhfjsdkf")
+        console.log(res)
         wx.showToast({
           title: '拍照错误',
           icon: 'none',
           duration: 2000
-        });
+        }).catch(console.error);
       }
     })
   },

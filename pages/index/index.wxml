@@ -5,10 +5,11 @@
 
 
         <view class='camera' wx:if="{{isCamera == false}}">
-            <camera device-position="back" flash="off" binderror="error" style="width: 100%; height: {{height}}px;"></camera>
+            <camera device-position="back" flash="off" binderror="error" style="width: 100%; height: 300px;"></camera>
         </view>
 
         <view class='preview' wx:if="{{isCamera == true}}">
+            <camera device-position="back" flash="off" binderror="error" style="width: 1%; height: 1px;"></camera>
             <image mode="aspecFill"  src="{{src}}" style="width: 100%; height: 100px;"></image>
         </view>
 
