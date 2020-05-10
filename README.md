@@ -2,8 +2,8 @@
 
 
 ## 首页截图
-![](./1.jpeg)
+![index](./1.jpeg)
 
 ## 二维码
 
-![](qrcode.jpg)
+![qrcode](./qrcode.jpg)
