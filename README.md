@@ -6,4 +6,4 @@
 
 ## 二维码
 
-![qrcode](./qrcode.jpg)
+![qrcode](https://photos-picgo.oss-cn-beijing.aliyuncs.com/img/qrcode.jpg)
