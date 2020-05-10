@@ -3,14 +3,16 @@
 const AV = require('../../utils/av-live-query-weapp-min');
 const car_recog = require('../../model/car_recog');
 const app = getApp()
-
+let interstitialAd = null
 Page({
   data: {
-    times: 0 ,
+    times: 1000 ,
     height: 350,
     listData: [
-      { year: "", name: "等待识别", score: 0.9980000000 },
+      { year: "", name: "等待识别", score: 0.9960000000 },
+      { year: "", name: "等待识别", score: 0.002000000000 },
       { year: "", name: "等待识别", score: 0.002000000000 }],
+      
     isCamera: false,
     src: '',
     userinfo: null,
@@ -30,15 +32,6 @@ Page({
     return {
       success: function (res) {
         
-        console.log(res)
-        console.log("S")
-        var times = wx.getStorageSync('times', times);
-        console.log(typeof(times))
-        times += 3
-        wx.setStorageSync('times', times);
-        _that.setData({
-          times: times
-        })
 
       },
       title: '拍照识车 百度AI引擎助力，秒拍即刻有结果~',
@@ -59,37 +52,14 @@ Page({
   onShow: function () {
     var that = this;
     
-    console.log("S")
-    var times = wx.getStorageSync('times', times)
-    console.log(times)
-    if (times == "")
-    times = 0
-    that.setData({
-      times: times
-    })
     this.setData({
-      isCamera: false,
+      
       userinfo: null
     });
   },
   recog(e) {
-    var times = wx.getStorageSync('times')
-    console.log(times)
-    if (times > 0) {
+
       this.takePhoto();
-    }
-    else {
-      wx.showModal({
-        title: "提示",
-        content: '对不起，识别次数不足，您可以转发来增加次数',
-        success: function (res) {
-          if (res.confirm) {
-
-          }
-
-        }
-      })
-    }
   },
 
   requestLogin() {
@@ -99,27 +69,25 @@ Page({
 
 
   uploadphoto: function () {
-
-
-    var times = wx.getStorageSync('times')
-    times -= 1
-    wx.setStorageSync('times', times)
     this.setData({
-      times: times,
       height: 100
     })
 
 
   },
   onLoad: function () {
-    var times = wx.getStorageSync('times')
-    this.setData({
-      times: times
-    })
+    // 在页面onLoad回调事件中创建插屏广告实例
+if (wx.createInterstitialAd) {
+  interstitialAd = wx.createInterstitialAd({
+    adUnitId: 'adunit-471d59634cab5939'
+  })
+  interstitialAd.onLoad(() => {})
+  interstitialAd.onError((err) => {})
+  interstitialAd.onClose(() => {})
+}
+
     if (app.globalData.userInfo) {
-      var times = wx.getStorageSync('times')
       this.setData({
-        times: times,
         userInfo: app.globalData.userInfo,
         hasUserInfo: true
       })
@@ -148,16 +116,10 @@ Page({
   },
   getUserInfo: function (e) {
     console.log(e)
-    var times = 5
-    wx.setStorageSync('times', times)
     app.globalData.userInfo = e.detail.userInfo
     this.setData({
       userInfo: e.detail.userInfo,
       hasUserInfo: true
-    })
-    var times = wx.getStorageSync('times')
-    this.setData({
-      times: times
     })
   },
   relogin() {
@@ -167,47 +129,39 @@ Page({
     })
   },
   addtimes() {
-    var times = wx.getStorageSync('times')
-    times += 3
-    wx.setStorageSync('times', times)
+
+
 
   },
   takePhoto() {
     var _this = this;
     let that = this;
 
-    wx.showLoading({
-      title: '正在识别',
-    })
-    for (var i = 350; i > 100; i -= 3)
-      that.setData(
-        {
-          height: i,
-        })
+
     that.setData(
       {
         height: 100,
       })
-    const ctx = wx.createCameraContext()
-    ctx.takePhoto({
-      quality: 'high',
-      success: (res) => {
-        console.log(res.tempImagePath)
+      wx.chooseImage({
+        complete: (res) => {
+        wx.showLoading({
+            title: '正在上传',
+          })
+        console.log(res)
         that.setData({
-          src: res.tempImagePath,
+          src: res.tempFilePaths[0],
           isCamera: true
         })
-        var times = wx.getStorageSync('times', times)
-        times -= 1
-        wx.setStorageSync('times', times)
-        this.setData({
-          times: times
-        })
+
         new AV.File('file-name', {
           blob: {
-            uri: res.tempImagePath,
+            uri: res.tempFilePaths[0],
           },
         }).save().then(function (file) {
+          wx.hideLoading()
+          wx.showLoading({
+            title: '正在识别',
+          })
           file => console.log(file.url())
           var bojid = wx.getStorageSync("objid");
           console.log(bojid);
@@ -240,13 +194,7 @@ Page({
                     if (res.confirm) {
                       console.log('用户点击确定 \n 本次识别不扣除次数')
                     }
-                    var times = wx.getStorageSync('times');
-                    times += 1;
-                    wx.setStorageSync('times', times);
 
-                    that.setData({
-                      times: times
-                    })
                   }
 
 
@@ -257,6 +205,11 @@ Page({
 
                 _this.setData({ listData: res.data.result });
                 wx.hideLoading()
+                if (interstitialAd) {
+                  interstitialAd.show().catch((err) => {
+                    console.error(err)
+                  })
+                }
               }
             }
           })

@@ -18,12 +18,7 @@ App({
         console.log(res)
         console.log(wx.getShareInfo())
         console.log("S")
-        var times = wx.getStorageSync('times', times)
-        times += 3;
-        wx.setStorageSync('times', times)
-        this.setData({
-          times: times
-        })
+
       },
       title: '拍照识车~',
       desc: '百度AI引擎助力，秒拍即刻有结果~',
@@ -70,6 +65,6 @@ App({
   },
   globalData: {
     userInfo: null,
-    times:0,
+    times:1000,
   }
 })

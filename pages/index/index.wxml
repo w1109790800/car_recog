@@ -3,14 +3,8 @@
     <view class='home'>
 
 
-
-        <view class='camera' wx:if="{{isCamera == false}}">
-            <camera device-position="back" flash="off" binderror="error" style="width: 100%; height: 300px;"></camera>
-        </view>
-
         <view class='preview' wx:if="{{isCamera == true}}">
-            <camera device-position="back" flash="off" binderror="error" style="width: 1%; height: 1px;"></camera>
-            <image mode="aspecFill"  src="{{src}}" style="width: 100%; height: 100px;"></image>
+            <image mode="aspecFill"  src="{{src}}" style="width: 100%; height: 300;"></image>
         </view>
 
         <view class='userinfo'>
@@ -20,27 +14,33 @@
   </view>
 
         <view class="view_list">
-              <button wx:if="{{!hasUserInfo && canIUse}}" open-type="getUserInfo" bindgetuserinfo="getUserInfo"> 获取头像昵称（获得5次识别机会） </button>
-         <button open-type='share'bindtap="addtimes" > 分享到群（获得3次机会） </button>
         <view class="sen-split"></view>
   <block wx:for="{{listData}}" wx:key= "code">
       <view class="sen-title">车型： {{item.name}}  {{item.year}}</view>
       <view class="sen-title">置信度： {{item.score*100}}</view>
       <view class="sen-title"></view>
     <view class="sen-split"></view>
+    
   </block>
+  
   </view>
+  
 
             <view class='r'>
                 <view class='img'>
                     <image mode="widthFix" src="{{userinfo.face_url}}" style="width: 100%; height: 110px;"></image>
+                    
                 </view>
+                
             </view>
+            
         </view>
+        <ad unit-id="adunit-b7a1cdc2cb5de986" ad-type="video" ad-theme="white"></ad>
+        
 
         <view class='bottom'>
-                        <button wx:if="{{isCamera == false}}" class="weui-btn" bindtap="recog" type="primary"> 提交识别 剩余次数：{{times}} </button>
-            <button  wx:if="{{isCamera == true}}" class="weui-btn" bindtap="relogin" type="primary"> 重新识别 剩余次数：{{times}} </button>
+                        <button open-type="getUserInfo" wx:if="{{isCamera == false}}" class="weui-btn" bindtap="recog" type="primary"> 提交识别</button>
+            <button  wx:if="{{isCamera == true}}" class="weui-btn" bindtap="relogin" type="primary"> 重新识别 </button>
         </view>
     </view>
 
